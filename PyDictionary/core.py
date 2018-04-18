@@ -67,19 +67,19 @@ class PyDictionary(object):
         if len(term.split()) > 1:
             print("Error: A Term must be only a single word")
         else:
+            li = []
             try:
                 data = _get_soup_object("http://www.thesaurus.com/browse/{0}".format(term))
                 terms = data.select("div#filters-0")[0].findAll("li")
                 if len(terms) > 5:
                     terms = terms[:5:]
-                li = []
                 for t in terms:
                     li.append(t.select("span.text")[0].getText())
-                if formatted:
-                    return {term: li}
-                return li
-            except:
-                print("{0} has no Synonyms in the API".format(term))
+            except IndexError:
+                pass
+            if formatted:
+                return {term: li}
+            return li
 
     def __repr__(self):
         return "<PyDictionary Object with {0} words>".format(len(self.args))
